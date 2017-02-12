@@ -15,11 +15,35 @@
     
     
     
-        body {                
-            background: #FF8C00;
-            margin: auto;
-            color: #fff;
-            }
+       body {
+  margin: 0;
+  background: #555;
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 100;
+  background: none;
+  color: #fff;
+}
+
+#backgroundImage1,
+#backgroundImage2,
+.ovarlay,
+.infoText {
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  position: absolute;
+}
+backgroundImage,
+#backgroundImage1,
+#backgroundImage2 {
+  background-color: #555;
+  background-image: url('https://raw.githubusercontent.com/Ojas-Singh/Ojas-Singh.github.io/master/bg.jpg');
+  background-position: center center;
+  background-size: cover;
+}
+
 .ovarlay {
   background: rgba(0, 0, 0, .6);
   z-index: 5;
