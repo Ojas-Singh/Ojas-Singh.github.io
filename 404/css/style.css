@@ -11,16 +11,20 @@
             -ms-text-size-adjust: 100%;                          
             }
     
-        html, input { font-family: roboto,"arvo", "Helvetica Neue", Helvetica, Arial, sans-serif; }
+        html, input { font-family: 'Roboto Mono',"arvo", "Helvetica Neue", Helvetica, Arial, sans-serif; }
     
     
     
         body {                
-            background: #FFA500;
+            background: #FF8C00;
             margin: auto;
             color: #fff;
             }
-    
+.ovarlay {
+  background: rgba(0, 0, 0, .6);
+  z-index: 5;
+}
+
     
         a {
         	-webkit-transition: all 200ms ease;
@@ -35,16 +39,7 @@
         	opacity: 1;
         	}
         
-            a:hover {
-        	    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)"; /* IE 8 */
-        	    filter: alpha(opacity=50); /* IE7 */
-        	    opacity: 0.6;
-                }
-
-                a, a:visited, a:active {
-                    color: #fff;
-                    text-decoration: none;
-                    }
+           
 
             .unicorn {
                 max-width: 100%;
