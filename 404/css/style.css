@@ -17,7 +17,7 @@
     
        body {
   margin: 0;
-  background: #555;
+  background: #625D5D;
   font-family: 'Roboto Mono', monospace;
   font-weight: 100;
   background: none;
@@ -25,10 +25,8 @@
 }
 
 
-backgroundImage,
-#backgroundImage1,
-#backgroundImage2 {
-  background-color: #555;
+backgroundImage {
+  background-color: #625D5D;
   background-image: url('https://raw.githubusercontent.com/Ojas-Singh/Ojas-Singh.github.io/master/bg.jpg');
   background-position: center center;
   background-size: cover;
