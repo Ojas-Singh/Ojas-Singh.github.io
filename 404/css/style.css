@@ -15,16 +15,11 @@
     
     
     
-       body {
-               margin: 0;
-               background: #625D5D;
-               font-family: 'Roboto Mono', monospace;
-               background-image: url('https://raw.githubusercontent.com/Ojas-Singh/Ojas-Singh.github.io/master/bg.jpg');
-               font-weight: 100;
-                background: none;
-                color: #625D5D;
-}
-
+   body {                
+            background: #625D5D;
+            margin: auto;
+            color: #fff;
+            }
 
 
 
