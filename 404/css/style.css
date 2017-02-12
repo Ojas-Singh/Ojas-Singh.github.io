@@ -34,10 +34,7 @@ backgroundImage,
   background-size: cover;
 }
 
-.ovarlay {
-  background: rgba(0, 0, 0, .6);
-  z-index: 0;
-}
+
 
     
         a {
