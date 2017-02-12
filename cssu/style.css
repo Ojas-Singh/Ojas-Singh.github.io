@@ -23,7 +23,7 @@ backgroundImage,
 #backgroundImage1,
 #backgroundImage2 {
   background-color: #555;
-  background-image: url('https://raw.githubusercontent.com/Ojas-Singh/IISER_MOHALI_STUDENT/master/UN.jpg');
+  background-image: url('https://raw.githubusercontent.com/Ojas-Singh/Ojas-Singh.github.io/master/bg.jpg');
   background-position: center center;
   background-size: cover;
 }
@@ -45,7 +45,7 @@ backgroundImage,
 
 .infoText span {
   font-size: 14px;
-  letter-spacing: 40px;
+  letter-spacing: 10px;
   display: block;
 }
 
