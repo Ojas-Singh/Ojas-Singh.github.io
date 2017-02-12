@@ -2,8 +2,8 @@
 
 
         /* SELECTED TEXT */
-        ::selection { background: #ff5e99; color: #FFFFFF; text-shadow: 0; }
-        ::-moz-selection { background: #ff5e99; color: #FFFFFF; }
+        ::selection { background: #000000; color: #FFFFFF; text-shadow: 0; }
+        ::-moz-selection { background: #000000; color: #FFFFFF; }
     
         html {
             font-size: 18px;font-size: 1.13rem;
@@ -11,12 +11,12 @@
             -ms-text-size-adjust: 100%;                          
             }
     
-        html, input { font-family: "arvo", "Helvetica Neue", Helvetica, Arial, sans-serif; }
+        html, input { font-family: roboto,"arvo", "Helvetica Neue", Helvetica, Arial, sans-serif; }
     
     
     
         body {                
-            background: #4A575A;
+            background: #FFA500;
             margin: auto;
             color: #fff;
             }
