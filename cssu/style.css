@@ -49,11 +49,30 @@ backgroundImage,
   display: block;
 }
 
-.infoText button {
-  font-size: 14px;
-  letter-spacing: 5px;
-  display: block;
+
+.infoText section {
+  padding: 60px 0 61px;
+  text-align: center;
+  position: relative;
 }
+.infoText section h2 {
+  margin-bottom: 15px;
+  font-weight: normal;
+  font-size: 17px;
+  color: #D2D2D2;
+  text-align: center;
+}
+.infoText section:not(:last-child):after {
+  content: '';
+  width: 70%;
+  height: 1px;
+  border-bottom: 1px dashed #2c3e50;
+  opacity: .5;
+  position: absolute;
+  bottom: -1px;
+  left: 15%;
+}
+
 
 .hide {
   opacity: 0;
