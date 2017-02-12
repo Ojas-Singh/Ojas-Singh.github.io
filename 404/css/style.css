@@ -24,17 +24,7 @@
   color: #fff;
 }
 
-#backgroundImage1,
-#backgroundImage2,
-.ovarlay,
-.infoText {
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  margin: auto;
-  position: absolute;
-}
+
 backgroundImage,
 #backgroundImage1,
 #backgroundImage2 {
@@ -46,7 +36,7 @@ backgroundImage,
 
 .ovarlay {
   background: rgba(0, 0, 0, .6);
-  z-index: 5;
+  z-index: 1;
 }
 
     
