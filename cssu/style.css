@@ -103,6 +103,17 @@ backgroundImage,
   }
 }
 
+.btn {
+  display: inline-block;
+  line-height: 35px;
+  margin: 8px;
+  padding: 0 15px;
+  font-size: 15px;
+  position: relative;
+  opacity: .999;
+  border-radius: 3px;
+}
+
 .btn-fill-vert-o {
   background-color: transparent;
   border: 1px solid #d0d0d0;
