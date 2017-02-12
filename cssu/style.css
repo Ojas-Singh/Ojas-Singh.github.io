@@ -96,3 +96,73 @@ backgroundImage,
     letter-spacing: 10px;
   }
 }
+
+.btn-fill-vert-o {
+	background-color: transparent;
+	border: 1px solid #d0d0d0;
+	color: #B8B8B8;
+	overflow: hidden;
+
+	&:before,
+	&:after {
+		content: '';
+		width: 100%;
+		height: 0;
+		opacity: 0;
+		position: absolute;
+		left: 0;
+		z-index: -1;
+		@extend .animate;
+	}
+
+	&:before {
+		top: 50%;
+	}
+
+	&:after {
+		bottom: 50%;
+	}
+
+	&:hover {
+		color: #fff;
+
+		&:before,
+		&:after {
+			height: 50%;
+			opacity: 1;
+		}
+	}
+
+	@each $name,$hex in $btn-colors {
+
+		&.btn-#{$name} {
+
+			&:before,
+			&:after {
+				background-color: #{$hex};
+			}
+
+			&:hover {
+				border-color: #{$hex};
+			}
+		}
+	}
+}
+
+@import url(//codepen.io/chrisdothtml/pen/ojLzJK.css);
+
+// colors
+$color-one: #2c3e50;
+$btn-colors: (
+	"green": "#2ecc71",
+	"blue": "#3498db",
+	"purple": "#9b59b6",
+	"navy": "#34495e",
+	"orange": "#e67e22",
+	"red": "#e74c3c"
+);
+
+// extenders
+.animate {
+	transition: all 0.3s;
+}
