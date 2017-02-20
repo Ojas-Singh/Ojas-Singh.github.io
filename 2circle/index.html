@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>Fraction Fingerprints</title>
+  
+  
+  
+      <link rel="stylesheet" href="css/style.css">
+
+  
+</head>
+
+<body>
+  <main>
+  <section>
+  
+    <div id="n" class="r n" v-bind:data-label="'Numerator: ' + reduced_n">
+      <div>
+        <span></span>
+      </div>
+    </div>
+
+    <div id="o" class="o" v-bind:data-label="'Formula: ' + reduced_n + ' / ' + reduced_d">
+      <svg viewbox="0 0 2000 2000">
+        <line class="h" x1="0" x2="2000" y1="" y2="" stroke-dasharray="10,10" />
+        <line class="v" x1="" x2="" y1="0" y2="2000" stroke-dasharray="10,10" />
+        <polyline points="" />
+        <circle cx="0" cy="0" r="10" />
+      </svg>
+    </div>
+
+    <div class="f">
+      <div>
+        <h1>{{n}} / {{d}} <small>@ {{t}} sec</small></h1>
+        <input type="range" class="a" v-model="n" min="1" max="30" placeholder="numerator" /> /
+        <input type="range" class="a" v-model="d" min="1" max="30" placeholder="denominator" /> @
+        <input type="range" class="b" v-model="t" min="3" max="15" placeholder="timelapse" />
+        <h2>
+          <label><input type="checkbox" v-model="c" /><span class="button">do it</span></label>
+          <span class="button" v-if="r && !c" v-on:click="clear">&times;</span>
+        </h2>
+      </div>
+    </div>
+
+    <div id="d" class="r d" v-bind:data-label="'Denominator: ' + reduced_d">
+      <div>
+        <span></span>
+      </div>
+    </div>
+
+  </section>
+
+  <aside>
+    <code>&lt;svg viewbox="0 0 2000 2000"&gt;
+
+  &lt;polyline 
+    points="{{code}}" /&gt;
+
+&lt;/svg&gt;
+    </code>
+  </aside>
+</main>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.1/vue.min.js'></script>
+
+    <script src="js/index.js"></script>
+
+</body>
+</html>
