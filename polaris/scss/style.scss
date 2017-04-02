@@ -1,0 +1,360 @@
+
+
+// --------------------------------------------------------------- Z INDECIES
+// list all elements that need z-indexing in ascending order here
+// use the index() function to return a number to be used as the z-index
+// example - z-index:index($z-of,class-name);
+$z-of:
+'#home-bg',
+'#home-header',
+'.ring',
+'#polaris-graphics-animation',
+'#home-nav',
+;
+
+
+
+// --------------------------------------------------------------- MIXINS
+@mixin absoluteFill{
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+}
+
+
+
+// --------------------------------------------------------------- DIMENSIONS
+$polarisCenterX:467;
+$polarisCenterY:353;
+$polarisWidth:1200;
+$polarisHeight:800;
+
+$ringHeight:1756;
+$ringWidth:$ringHeight;
+
+$ringSizeWidth: (100% * $ringWidth) / $polarisWidth;
+$ringSizeHeight: (100% * $ringHeight) / $polarisHeight;
+$ringSizeWidth: (100% * $ringWidth) / $polarisWidth;
+$ringSizeHeight: (100% * $ringHeight) / $polarisHeight;
+
+$polarisCenterXPercent:(100% * $polarisCenterX) / $polarisWidth;
+$polarisCenterYPercent:(100% * $polarisCenterY) / $polarisHeight;
+
+
+
+// --------------------------------------------------------------- COLOR VARS
+$colorAccent: #ff5831; // that blood orange
+$colorAnimationRings:			#448784	;
+$colorAnimationBG:				#172126	;
+
+
+
+// --------------------------------------------------------------- TIMER VARS
+$rushOut:cubic-bezier(0,0,0,1); // fast into slow
+
+// star initial timing
+$a1Delay:						.5s		;
+$a1Start: 						$a1Delay;
+$a1Duration:					0.6s	;
+$a1Bleed:						0.35s	;
+
+// center blur timings
+$a2Delay:						.07s	;
+$a2Duration:					$a2Delay * 50 ;
+$a2Start: $a1Start + $a1Duration - $a2Delay - $a1Bleed	;
+	$a21Start:			$a2Start	+ ( $a2Delay * 0 );
+	$a21Duration:		$a2Duration + ( $a2Delay * 3 );
+	$a22Start:			$a2Start	+ ( $a2Delay * 1 );
+	$a22Duration:		$a2Duration + ( $a2Delay * 2 );
+	$a23Start:			$a2Start	+ ( $a2Delay * 2 );
+	$a23Duration:		$a2Duration + ( $a2Delay * 1 );
+	$a24Start:			$a2Start	+ ( $a2Delay * 3 );
+	$a24Duration:		$a2Duration + ( $a2Delay * 0 );
+
+$a3Delay:	0.4s;
+$a3Start:	$a2Start + ($a2Delay * 4) + $a3Delay;
+$a3Duration: $a2Duration - ($a2Delay * 4);
+
+// rings start & spin
+$a4Delay:	0.5s;
+$a4Start:	$a2Start + $a2Duration ;
+$a4Duration: 200s;
+	$a41Duration: 40s;
+	$a42Duration: 60s;
+
+// lettering animation timing
+$a5Delay:	-1.7s;
+$a5Start:	$a2Start + $a2Duration + $a5Delay;
+$a5Duration: 1s;
+	$a5gDelay: .15s;
+
+// center spin finals
+$a6Delay:0;
+$a6Start: $a2Start + $a2Duration + ($a2Delay );
+
+$a7Start: $a5Start+0.75;
+
+$timing1:cubic-bezier(.22,-0.08,0,.99);
+$timing2:cubic-bezier(.52,-0.61,0,1);
+$timing3:cubic-bezier(.25,0,0,1);
+$timingZoomOut:cubic-bezier(0,0,0,.93) ;
+
+
+
+// --------------------------------------------------------------- POSITION VARS
+$centerInitialPosition:			translate(0,600px)	scale(1);
+$centerSecondaryPosition:		translate(0,-30px)	scale(1.3) ;
+$centerPosition:				translate(0,0)		scale(1);
+
+$blurredStarInitialPosition:	rotate(	-45deg) 		scale(0)	;
+$blurredStarStopPosition:		rotate( -45deg) 		scale(1.2)	;
+$blurredStarSecondaryPosition:	rotate( -45deg) 		scale(1)	;
+$blurredStar1Position:			rotate(260 + 25deg) 	scale(1)	;
+$blurredStar2Position:			rotate(260 + 240deg) 	scale(1)	;
+$blurredStar3Position:			rotate(260 + 70deg) 	scale(1)	;
+$blurredStar4Position:			rotate(260 + 340deg) 	scale(1)	;
+$blurredStar1Position2:			rotate(360 + 260 + 25deg) 	scale(1)	;
+$blurredStar2Position2:			rotate(360 + 260 + 240deg) 	scale(1)	;
+$blurredStar3Position2:			rotate(360 + 260 + 70deg) 	scale(1)	;
+$blurredStar4Position2:			rotate(360 + 260 + 340deg) 	scale(1)	;
+
+$outerRingInitialPosition: 		rotate(0deg);
+$outerRingPosition: 			rotate(70deg);
+
+
+
+// --------------------------------------------------------------- KEYFRAMES
+$z: translateZ(0);
+
+@keyframes spin-in {
+	0% 		{ 	transform: rotate(0deg)	$z; 	opacity: 0;}
+	1%		{ 	opacity: 1;}
+	100% 	{ 	transform: rotate(360deg)	$z; 	opacity: 1;}
+}
+@keyframes spin {
+	0% 		{ 	transform: rotate(0deg)		$z;}
+	100% 	{ 	transform: rotate(360deg)	$z;}
+}
+
+@keyframes a1 {
+	0% 		{	transform: $centerInitialPosition	$z;}
+	70%		{	transform: $centerSecondaryPosition	$z;}
+	100% 	{	transform: $centerPosition			$z;}
+}
+
+$stoppoint: 7%;
+$midpoint: 15%;
+@keyframes a21 {
+	0% 				{	transform: $blurredStarInitialPosition		$z; opacity: 0;}
+	#{$stoppoint}	{	transform: $blurredStarStopPosition			$z; opacity: 1;}
+	#{$midpoint}	{	transform: $blurredStarSecondaryPosition	$z;}
+	100% 			{	transform: $blurredStar1Position			$z;}
+}
+@keyframes a22 {
+	0% 				{	transform: $blurredStarInitialPosition		$z; opacity: 0;}
+	#{$stoppoint}	{	transform: $blurredStarStopPosition			$z; opacity: 1;}
+	#{$midpoint}	{	transform: $blurredStarSecondaryPosition	$z;}
+	100% 			{	transform: $blurredStar2Position			$z;}
+}
+@keyframes a23 {
+	0% 				{	transform: $blurredStarInitialPosition		$z; opacity: 0;}
+	#{$stoppoint}	{	transform: $blurredStarStopPosition			$z; opacity: 1;}
+	#{$midpoint}	{	transform: $blurredStarSecondaryPosition	$z;}
+	100% 			{	transform: $blurredStar3Position			$z;}
+}
+@keyframes a24 {
+	0% 				{	transform: $blurredStarInitialPosition		$z; opacity: 0;}
+	#{$stoppoint}	{	transform: $blurredStarStopPosition			$z; opacity: 1;}
+	#{$midpoint}	{	transform: $blurredStarSecondaryPosition	$z;}
+	100% 			{	transform: $blurredStar4Position			$z;}
+}
+
+@keyframes spin1 {
+	0% 		{ 	transform: $blurredStar1Position	$z;}
+	100% 	{ 	transform: $blurredStar1Position2	$z;}
+}
+@keyframes spin2 {
+	0% 		{ 	transform: $blurredStar2Position	$z;}
+	100% 	{ 	transform: $blurredStar2Position2	$z;}
+}
+@keyframes spin3 {
+	0% 		{ 	transform: $blurredStar3Position	$z;}
+	100% 	{ 	transform: $blurredStar3Position2	$z;}
+}
+@keyframes spin4 {
+	0% 		{ 	transform: $blurredStar4Position	$z;}
+	100% 	{ 	transform: $blurredStar4Position2	$z;}
+}
+
+@keyframes a3 {
+	0% 		{ 	
+		transform: $outerRingInitialPosition $z;
+		opacity: 0;
+	}
+	100% 	{ 	
+		transform: $outerRingPosition $z;	
+		opacity: 1;
+	}
+}
+
+@keyframes fade-in {
+	0% {
+		transform: scale(1.1) translateX(0);
+		// opacity: 0;
+	}
+	100% {
+		// opacity: 1;
+		transform: scale(1) translateX(0); 
+		fill: #fff; /* without this it won't work in Chrome/Safari */
+	}
+
+}
+
+
+
+// --------------------------------------------------------------- ANIMATION ALLOCATION
+.animate{ // class is added by jQuery durin the window.load event
+
+	#p-laris, #graphics{	
+		opacity: 1;
+		animation: fade-in $a5Duration $a5Start $rushOut 1 forwards;
+		fill: rgba(white,0);
+	}
+	#graphics{ animation-delay: $a5Start + $a5gDelay; }
+
+	#star{
+		transform: $centerInitialPosition;
+		animation: a1 $a1Duration $a1Start ease 1 forwards;
+	}
+
+	.blurred-star{ transform: $blurredStarInitialPosition; }
+	#blur-1{	animation: a21 $a21Duration $a21Start $timing3 1 forwards, spin1 20s $a6Start linear infinite; }
+	#blur-2{	animation: a22 $a22Duration $a22Start $timing3 1 forwards, spin2 30s $a6Start linear infinite; }
+	#blur-3{	animation: a23 $a23Duration $a23Start $timing3 1 forwards, spin3 40s $a6Start linear infinite; }
+	#blur-4{	animation: a24 $a24Duration $a24Start $timing3 1 forwards, spin4 50s $a6Start linear infinite; }
+
+	#ring-1{	
+		animation: 	spin-in $a41Duration $a21Start+1 linear 1 forwards, 
+					spin $a41Duration linear infinite ;
+		opacity: 0;
+	}
+	#ring-2{	
+		animation: 	spin-in $a42Duration $a23Start+1 linear 1 forwards, 
+					spin $a42Duration linear infinite ;
+		opacity: 0;
+	}
+}
+
+
+
+// --------------------------------------------------------------- STYLING PROPERTIES
+#p-laris
+,#graphics
+,#star
+,.blurred-star
+{
+	transform-origin: 467px 353px;
+	backface-visibility: hidden;
+}
+
+#lettering
+,.blurred-star
+{
+	fill:#fff;
+}
+#star{
+	fill: $colorAccent;
+}
+
+.ring svg{
+	fill: none;
+	stroke: $colorAnimationRings;
+	stroke-linecap: round;
+	stroke-miterlimit: 10;
+}
+#ring-1 svg{
+	opacity:.3;
+	stroke-width:1px;
+}
+#ring-2 svg{
+	opacity:.35;
+	stroke-width:3px;
+}
+
+#home-bg{
+	z-index: index($z-of, '#home-bg');
+	@include absoluteFill;
+	background: $colorAnimationBG;
+}
+
+#total-animation{
+	@include absoluteFill;
+  background: $colorAnimationBG;
+  overflow: hidden;
+}
+
+.ring {
+	z-index: index($z-of, '.ring');
+	position: absolute;
+	top: 50%;	// this is reset by perfectCenterRings()
+	left: 50%; 	// this is reset by perfectCenterRings()
+	width: 100% ;
+	height: 100%;
+	transform-origin: top left ;
+	svg{
+		width: 300%;
+		height: 300%;
+		transform: translate(-50%,-50%);
+	}
+}
+
+#polaris-graphics-animation{
+	z-index: index($z-of, '#polaris-graphics-animation');
+	position: absolute;
+	height: 100%;
+	width: 100%;
+}
+
+#home-nav{
+	z-index: index($z-of, '#home-nav');
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+$polarisRatio: $polarisWidth / $polarisHeight ;
+$polarisRatioInvert: $polarisHeight / $polarisWidth ;
+$windowHeight: 100vh ;
+$windowWidth: 100vw ;
+
+@media screen and (min-aspect-ratio: #{$polarisWidth}/#{$polarisHeight}) {
+  .ring{
+    top:((100% * $polarisCenterY) / $polarisHeight);
+    $offsetX: ( $windowHeight/( $polarisRatioInvert * $polarisWidth/$polarisCenterX ) - $polarisRatio * $windowHeight/2 );
+    $insetX: $windowWidth/2 ;
+    left:calc(#{$insetX} + #{$offsetX});
+  }
+}
+
+@media screen and (max-aspect-ratio: #{$polarisWidth}/#{$polarisHeight}) {
+  .ring{
+    left:((100% * $polarisCenterX) / $polarisWidth);
+    $offsetY: ( $windowWidth/( $polarisRatio * $polarisHeight/$polarisCenterY ) - $polarisRatioInvert * $windowWidth/2 );
+    $insetY: $windowHeight/2 ;
+    top:calc(#{$insetY} + #{$offsetY});
+  }
+}
+
+/*! 
+ * Firefox 1.0+ Detection 
+ * FireFox can't handle animationing such a large area?
+ * hide the .rings so we don't see choppy animation
+ */
+@-moz-document url-prefix() { 
+  .ring {
+     display:none;
+  }
+}
