@@ -1,0 +1,365 @@
+// Adapted from https://johnflux.com/2015/05/02/nokia-6110-part-3-algorithms/
+{
+	const map = {
+		// init map
+		init(width, height) {
+			this.width = width;
+			this.height = height;
+			this.size = width * height;
+			this.scale = Math.min(canvasWidth, canvasHeight) / Math.max(this.width, this.height);
+			// Hamiltonian Cycle
+			[this.tour, this.setTour] = this.array2D(width, height, true);
+			// flags
+			[this.isVisited, this.setVisited] = this.array2D(width / 2, height / 2);
+			[this.canGoRight, this.setGoRight] = this.array2D(width / 2, height / 2);
+			[this.canGoDown, this.setGoDown] = this.array2D(width / 2, height / 2);
+			[this.isSnake, this.setSnake] = this.array2D(width, height);
+			this.canGoLeft = (x, y) => {
+				if (x === 0) return false;
+				return this.canGoRight(x - 1, y);
+			};
+			this.canGoUp = (x, y) => {
+				if (y === 0) return false;
+				return this.canGoDown(x, y - 1);
+			}
+		},
+		// directions
+		Left: 1,
+		Up: 2,
+		Right: 3,
+		Down: 4,
+		// flat 2D array
+		array2D(width, height, protect) {
+			const data = new Uint16Array(width * height);
+			return [
+				(x, y) => {
+					return data[x + width * y];
+				},
+				(protect) ?
+				(x, y, value) => {
+					const i = x + width * y;
+					if (!data[i]) data[i] = value;
+				} : (x, y, value) => {
+					data[x + width * y] = value;
+				}
+			];
+		},
+		// test snake collision
+		collision(x, y) {
+			if (x < 0 || x >= this.width) return true;
+			if (y < 0 || y >= this.height) return true;
+			return (this.isSnake(x, y) !== 0);
+		},
+		// path distance
+		distance(a, b) {
+			if (a < b) return (b - a - 1);
+			else return (b - a - 1 + this.size);
+		},
+		// Hamiltonian Cycle
+		generate_r(fromx, fromy, x, y) {
+			if (x < 0 || y < 0 || x >= this.width / 2 || y >= this.height / 2) return;
+			if (this.isVisited(x, y)) return;
+			this.setVisited(x, y, 1);
+			if (fromx !== -1) {
+				if (fromx < x) this.setGoRight(fromx, fromy, 1);
+				else if (fromx > x) this.setGoRight(x, y, 1);
+				else if (fromy < y) this.setGoDown(fromx, fromy, 1);
+				else if (fromy > y) this.setGoDown(x, y, 1);
+			}
+			for (let i = 0; i < 2; i++) {
+				const r = Math.floor(Math.random() * 4);
+				switch (r) {
+					case 0:
+						this.generate_r(x, y, x - 1, y);
+						break;
+					case 1:
+						this.generate_r(x, y, x + 1, y);
+						break;
+					case 2:
+						this.generate_r(x, y, x, y - 1);
+						break;
+					case 3:
+						this.generate_r(x, y, x, y + 1);
+						break;
+				}
+			}
+			this.generate_r(x, y, x - 1, y);
+			this.generate_r(x, y, x + 1, y);
+			this.generate_r(x, y, x, y + 1);
+			this.generate_r(x, y, x, y - 1);
+		},
+		// find next direction in cycle
+		findNextDir(x, y, dir) {
+			if (dir === this.Right) {
+				if (this.canGoUp(x, y)) return this.Up;
+				if (this.canGoRight(x, y)) return this.Right;
+				if (this.canGoDown(x, y)) return this.Down;
+				return this.Left;
+			} else if (dir === this.Down) {
+				if (this.canGoRight(x, y)) return this.Right;
+				if (this.canGoDown(x, y)) return this.Down;
+				if (this.canGoLeft(x, y)) return this.Left;
+				return this.Up;
+			} else if (dir === this.Left) {
+				if (this.canGoDown(x, y)) return this.Down;
+				if (this.canGoLeft(x, y)) return this.Left;
+				if (this.canGoUp(x, y)) return this.Up;
+				return this.Right;
+			} else if (dir === this.Up) {
+				if (this.canGoLeft(x, y)) return this.Left;
+				if (this.canGoUp(x, y)) return this.Up;
+				if (this.canGoRight(x, y)) return this.Right;
+				return this.Down;
+			}
+			return -1; //Unreachable
+		},
+		// generate Hamiltonian Cycle
+		generateTourNumber() {
+			let x = 0;
+			let y = 0;
+			let dir = this.canGoDown(x, y) ? this.Up : this.Left;
+			let number = 0;
+			do {
+				let nextDir = this.findNextDir(x, y, dir);
+				switch (dir) {
+					case this.Right:
+						this.setTour(x * 2, y * 2, number++);
+						if (nextDir === dir || nextDir === this.Down || nextDir === this.Left) this.setTour(x * 2 + 1, y * 2, number++);
+						if (nextDir === this.Down || nextDir === this.Left) this.setTour(x * 2 + 1, y * 2 + 1, number++);
+						if (nextDir === this.Left) this.setTour(x * 2, y * 2 + 1, number++);
+						break;
+					case this.Down:
+						this.setTour(x * 2 + 1, y * 2, number++);
+						if (nextDir === dir || nextDir === this.Left || nextDir === this.Up) this.setTour(x * 2 + 1, y * 2 + 1, number++);
+						if (nextDir === this.Left || nextDir === this.Up) this.setTour(x * 2, y * 2 + 1, number++);
+						if (nextDir === this.Up) this.setTour(x * 2, y * 2, number++);
+						break;
+					case this.Left:
+						this.setTour(x * 2 + 1, y * 2 + 1, number++);
+						if (nextDir === dir || nextDir === this.Up || nextDir === this.Right) this.setTour(x * 2, y * 2 + 1, number++);
+						if (nextDir === this.Up || nextDir === this.Right) this.setTour(x * 2, y * 2, number++);
+						if (nextDir === this.Right) this.setTour(x * 2 + 1, y * 2, number++);
+						break;
+					case this.Up:
+						this.setTour(x * 2, y * 2 + 1, number++);
+						if (nextDir === dir || nextDir === this.Right || nextDir === this.Down) this.setTour(x * 2, y * 2, number++);
+						if (nextDir === this.Right || nextDir === this.Down) this.setTour(x * 2 + 1, y * 2, number++);
+						if (nextDir === this.Down) this.setTour(x * 2 + 1, y * 2 + 1, number++);
+						break;
+				}
+				dir = nextDir;
+				switch (nextDir) {
+					case this.Right:
+						++x;
+						break;
+					case this.Left:
+						--x;
+						break;
+					case this.Down:
+						++y;
+						break;
+					case this.Up:
+						--y;
+						break;
+				}
+			} while (number !== this.size);
+		},
+		// get next node
+		getNext(x, y, dir) {
+			switch (dir) {
+				case this.Left:
+					if (x) return {
+						x: x - 1,
+						y: y
+					};
+					break;
+				case this.Up:
+					if (y) return {
+						x: x,
+						y: y - 1
+					};
+					break;
+				case this.Right:
+					return {
+						x: x + 1,
+						y: y
+					};
+					break;
+				case this.Down:
+					return {
+						x: x,
+						y: y + 1
+					};
+					break;
+			}
+			return {
+				x,
+				y
+			};
+		},
+		// draw map
+		draw() {
+			ctx.beginPath();
+			ctx.strokeStyle = "#fff";
+			ctx.lineCap = "round";
+			ctx.lineJoin = "round";
+			ctx.lineWidth = this.scale * 0.5;
+			for (let b of snake.body) {
+				ctx.lineTo(this.scale * 0.5 + b.x * this.scale, this.scale * 0.5 + b.y * this.scale);
+			}
+			ctx.stroke();
+			if (snake.body.length < map.size - 1) {
+				ctx.beginPath();
+				ctx.fillStyle = "#f80";
+				ctx.arc(this.scale * 0.5 + food.x * this.scale, this.scale * 0.5 + food.y * this.scale, 0.4 * this.scale, 0, 2 * Math.PI);
+				ctx.fill();
+			}
+		}
+	};
+
+	// food object
+	const food = {
+		x: 0,
+		y: 0,
+		// add random food
+		add() {
+			const emptyNodes = [];
+			for (let x = 0; x < map.width; ++x) {
+				for (let y = 0; y < map.height; ++y) {
+					if (!map.collision(x, y)) emptyNodes.push({
+						x,
+						y
+					});
+				}
+			}
+			if (emptyNodes.length) {
+				const p = emptyNodes[Math.floor(Math.random() * emptyNodes.length)];
+				this.x = p.x;
+				this.y = p.y;
+			}
+		}
+	};
+
+	// the snake
+	const snake = {
+		body: [],
+		head: {
+			x: 0,
+			y: 0
+		},
+		removeTail() {
+			const p = this.body.shift();
+			map.setSnake(p.x, p.y, 0);
+		},
+		addHead(x, y) {
+			this.head.x = x;
+			this.head.y = y;
+			this.body.push({
+				x,
+				y
+			});
+			map.setSnake(x, y, 1);
+		},
+		move(dir) {
+			let next = map.getNext(this.head.x, this.head.y, dir);
+			this.addHead(next.x, next.y);
+			if (next.x === food.x && next.y === food.y) {
+				food.add();
+			} else this.removeTail();
+		},
+		// snake IA
+		nextDirection() {
+			const x = this.head.x;
+			const y = this.head.y;
+			const pathNumber = map.tour(x, y);
+			const distanceToFood = map.distance(pathNumber, map.tour(food.x, food.y));
+			const distanceToTail = map.distance(pathNumber, map.tour(snake.body[0].x, snake.body[0].y));
+			let cuttingAmountAvailable = distanceToTail - 4;
+			const numEmptySquaresOnBoard = map.size - snake.body.length - 1;
+			if (distanceToFood < distanceToTail) cuttingAmountAvailable -= 1;
+			const cuttingAmountDesired = distanceToFood;
+			if (cuttingAmountDesired < cuttingAmountAvailable) cuttingAmountAvailable = cuttingAmountDesired;
+			if (cuttingAmountAvailable < 0) cuttingAmountAvailable = 0;
+			const canGoRight = !map.collision(x + 1, y);
+			const canGoLeft = !map.collision(x - 1, y);
+			const canGoDown = !map.collision(x, y + 1);
+			const canGoUp = !map.collision(x, y - 1);
+			let bestDir = -1;
+			let bestDist = -1;
+			let dist = 0;
+			if (canGoRight) {
+				dist = map.distance(pathNumber, map.tour(x + 1, y));
+				if (dist <= cuttingAmountAvailable && dist > bestDist) {
+					bestDir = map.Right;
+					bestDist = dist;
+				}
+			}
+			if (canGoLeft) {
+				dist = map.distance(pathNumber, map.tour(x - 1, y));
+				if (dist <= cuttingAmountAvailable && dist > bestDist) {
+					bestDir = map.Left;
+					bestDist = dist;
+				}
+			}
+			if (canGoDown) {
+				dist = map.distance(pathNumber, map.tour(x, y + 1));
+				if (dist <= cuttingAmountAvailable && dist > bestDist) {
+					bestDir = map.Down;
+					bestDist = dist;
+				}
+			}
+			if (canGoUp) {
+				dist = map.distance(pathNumber, map.tour(x, y - 1));
+				if (dist <= cuttingAmountAvailable && dist > bestDist) {
+					bestDir = map.Up;
+					bestDist = dist;
+				}
+			}
+			if (bestDist >= 0) return bestDir;
+			if (canGoUp) return map.Up;
+			if (canGoLeft) return map.Left;
+			if (canGoDown) return map.Down;
+			if (canGoRight) return map.Right;
+			return map.Right;
+		}
+	}
+
+	// init canvas
+	const canvas = document.getElementById("c");
+	const ctx = canvas.getContext('2d');
+	const canvasWidth = canvas.width = 600;
+	const canvasHeight = canvas.height = 600;
+	canvas.onclick = init;
+	let running = false;
+	let frame = 0;
+	const fullcpgrid =  (window.location.href.indexOf("fullcpgrid") > -1);
+
+	// init map
+	function init() {
+		snake.body.length = 0;
+		map.init(10, 10);
+		map.generate_r(-1, -1, 0, 0);
+		map.generateTourNumber();
+		snake.addHead(0, 0);
+		snake.addHead(1, 0);
+		snake.addHead(2, 0);
+		food.add();
+		if (!running) {
+			running = true;
+			run();
+		}
+	}
+
+	// main loop
+	function run() {
+		if (snake.body.length < map.size) requestAnimationFrame(run);
+		else running = false;
+		if (fullcpgrid || frame++ % 4 === 0) {
+			snake.move(snake.nextDirection());
+			ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+			map.draw();
+		}
+	}
+
+	init();
+}
