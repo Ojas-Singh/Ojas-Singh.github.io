@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Healoor@multiVAC</title>
+    <link>https://healoor.me/</link>
+    <description>Recent content on Healoor@multiVAC</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>© 2021 Ojas Singh</copyright>
+    <lastBuildDate>Wed, 22 Sep 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://healoor.me/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Wait-free parallel Algorithm</title>
+      <link>https://healoor.me/post/ooo/</link>
+      <pubDate>Wed, 22 Sep 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://healoor.me/post/ooo/</guid>
+      <description>&lt;p&gt;How i solved a optimization problem by just redefining the workflow!&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://healoor.me/archives/</link>
+      <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://healoor.me/archives/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>https://healoor.me/about/</link>
+      <pubDate>Thu, 28 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://healoor.me/about/</guid>
+      <description>Hello there!, I&amp;rsquo;m Ojas Singh, and this is my personal webpage.
+My interests lie at the intersection of chemistry, quantum computing, and machine learning. I like solving problems and have wide range of interests generally revolving around writing computer code to make sense of complex things. I love writing codes in Rust.
+Currently, I am in the final semester of my BS-MS (chemistry) dual degree program at the Indian Institute of Science Education and Research Mohali, India.</description>
+    </item>
+    
+  </channel>
+</rss>

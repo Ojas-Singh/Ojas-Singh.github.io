@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Healoor@multiVAC</title>
+    <link>https://healoor.me/post/</link>
+    <description>Recent content in Posts on Healoor@multiVAC</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>© 2021 Ojas Singh</copyright>
+    <lastBuildDate>Wed, 22 Sep 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://healoor.me/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Wait-free parallel Algorithm</title>
+      <link>https://healoor.me/post/ooo/</link>
+      <pubDate>Wed, 22 Sep 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://healoor.me/post/ooo/</guid>
+      <description>&lt;p&gt;How i solved a optimization problem by just redefining the workflow!&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
