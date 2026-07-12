@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-brand-50: #eef2ff;
+  --color-brand-100: #e0e7ff;
+  --color-brand-200: #c7d2fe;
+  --color-brand-300: #a5b4fc;
+  --color-brand-400: #818cf8;
+  --color-brand-500: #6366f1;
+  --color-brand-600: #4f46e5;
+  --color-brand-700: #4338ca;
+  --color-brand-800: #3730a3;
+  --color-brand-900: #312e81;
+  --color-brand-950: #1e1b4b;
+
+  --color-paper: #faf9f7;
+  --color-card: #ffffff;
+  --color-inset: #f5f4f1;
+  --color-line: #ebe9e4;
+  --color-line-hover: #d6d3cc;
+  --color-ink: #1a1a1a;
+  --color-ink-secondary: #57534e;
+  --color-ink-muted: #a8a29e;
+  --color-warm: #c2410c;
+
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-draft: "Newsreader", Georgia, "Times New Roman", ui-serif, serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+.font-draft {
+  font-family: var(--font-draft);
+}
+
+.draft-textarea {
+  font-family: var(--font-draft);
+  font-size: 1.0625rem;
+  line-height: 1.85;
+  color: var(--color-ink);
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  width: 100%;
+  min-height: 60vh;
+  font-feature-settings: "liga", "kern";
+}
+
+.draft-textarea::placeholder {
+  color: var(--color-ink-muted);
+  font-style: italic;
+  opacity: 0.7;
+}
+
+.draft-textarea::selection {
+  background: rgba(99, 102, 241, 0.18);
+}
+
+.draft-textarea:focus {
+  outline: none;
+}
+
+::selection {
+  background: rgba(99, 102, 241, 0.15);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d6d3cc;
+  border-radius: 5px;
+  border: 2px solid var(--color-paper);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a29e;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes stagger-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes flash-highlight {
+  0% { background: rgba(99, 102, 241, 0.15); }
+  100% { background: transparent; }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+.stagger-item {
+  animation: stagger-in 0.25s ease-out backwards;
+}
+
+.flash-highlight {
+  animation: flash-highlight 1.2s ease-out;
+}

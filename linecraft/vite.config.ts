@@ -1,0 +1,26 @@
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  base: "/linecraft/",
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "src"),
+    },
+  },
+  server: {
+    proxy: {
+      "/api/openai": {
+        target: "https://opencode.ai",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/openai/, "/zen/go/v1"),
+      },
+    },
+  },
+});
