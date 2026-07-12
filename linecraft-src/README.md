@@ -104,6 +104,13 @@ Health check:
 curl http://localhost:8787/health
 ```
 
+Safari blocks an HTTPS page from calling a local HTTP proxy. After starting the
+proxy, open LineCraft through the same local origin instead:
+
+```text
+http://localhost:8787/linecraft/
+```
+
 ## All data is local
 
 - Drafts, style profiles, and projects are stored in **IndexedDB** (via Dexie.js).

@@ -3,6 +3,7 @@ import http from "node:http";
 const HOST = "127.0.0.1";
 const PORT = Number(process.env.PORT || 8787);
 const TARGET = "https://opencode.ai/zen/go/v1/chat/completions";
+const SITE_ORIGIN = "https://ojas-singh.github.io";
 const ALLOWED_ORIGINS = new Set([
   "https://ojas-singh.github.io",
   "http://localhost:5173",
@@ -53,6 +54,24 @@ const server = http.createServer(async (request, response) => {
     return;
   }
 
+  // Serve the public LineCraft site through the local origin. Safari blocks an
+  // HTTPS GitHub Pages tab from calling a local HTTP service, even when CORS is
+  // correct. Opening /linecraft/ here keeps the page and API on one origin.
+  if (request.method === "GET") {
+    try {
+      const upstream = await fetch(`${SITE_ORIGIN}${url.pathname}${url.search}`);
+      response.writeHead(upstream.status, {
+        "Content-Type": upstream.headers.get("content-type") || "application/octet-stream",
+        "Cache-Control": "no-store",
+      });
+      if (upstream.body) for await (const chunk of upstream.body) response.write(chunk);
+      response.end();
+    } catch (error) {
+      sendJson(response, 502, { error: "Could not load LineCraft", detail: String(error) }, origin);
+    }
+    return;
+  }
+
   if (request.method !== "POST" || url.pathname !== "/chat/completions") {
     sendJson(response, 404, { error: "Not found" }, origin);
     return;
@@ -90,5 +109,6 @@ const server = http.createServer(async (request, response) => {
 
 server.listen(PORT, HOST, () => {
   console.log(`LineCraft OpenCode Go proxy running at http://${HOST}:${PORT}`);
-  console.log("Keep this terminal open while using https://ojas-singh.github.io/linecraft/");
+  console.log(`Open LineCraft at http://localhost:${PORT}/linecraft/`);
+  console.log("Keep this terminal open while using LineCraft.");
 });
