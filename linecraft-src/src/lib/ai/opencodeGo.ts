@@ -1,4 +1,5 @@
 import { getSettings } from "../storage/settings";
+import { DEFAULT_PROXY_URL } from "@/types/settings";
 import type { OpenCodeGoCall } from "./types";
 
 const DIRECT_ENDPOINT =
@@ -8,7 +9,7 @@ const VITE_PROXY_PATH = "/api/openai/chat/completions";
 
 function getProxyUrl(): string {
   const settings = getSettings();
-  return settings.proxyUrl?.trim() || "";
+  return settings.proxyUrl?.trim() || DEFAULT_PROXY_URL;
 }
 
 function getEndpoint(): string {
@@ -39,6 +40,12 @@ function buildBody(params: OpenCodeGoCall): Record<string, unknown> {
 
 function connectionError(endpoint: string, err: unknown): Error {
   if (getProxyUrl()) {
+    if (getProxyUrl() === DEFAULT_PROXY_URL) {
+      return new Error(
+        `Could not reach the local proxy at ${endpoint}. Run the local proxy command shown in Settings, then try again. (${String(err)})`
+      );
+    }
+
     return new Error(
       `Could not reach proxy at ${endpoint}. Verify the proxy URL is correct and reachable. (${String(err)})`
     );

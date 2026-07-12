@@ -72,13 +72,37 @@ Default: **session only**.
 
 ## Browser-only OpenCode Go behavior
 
-LineCraft does not require a backend, Cloudflare Worker, browser extension, or local helper process to deploy.
+LineCraft does not require a public backend, Cloudflare Worker, or browser extension to deploy.
 
 The OpenCode Go model list endpoint currently works from the browser, so LineCraft loads the current model list dynamically. AI generation attempts direct browser requests to the OpenCode Go chat completions endpoint.
 
 If chat completions fail with CORS, that is a browser security restriction enforced by OpenCode Go's response headers. Frontend JavaScript, GitHub Pages, Vite, and `fetch` options cannot bypass server CORS rules. Browser-only AI generation will work if OpenCode Go allows web origins for chat completions.
 
-An optional advanced proxy URL remains available in Settings for users who later have a trusted proxy, but it is not required for browser-only deployment.
+By default, LineCraft uses a personal local proxy at:
+
+```text
+http://127.0.0.1:8787
+```
+
+Users can start it from any folder with one command.
+
+Windows PowerShell:
+
+```powershell
+irm https://ojas-singh.github.io/linecraft/local-opencode-proxy.mjs | node --input-type=module
+```
+
+macOS, Linux, or Git Bash:
+
+```bash
+curl -fsSL https://ojas-singh.github.io/linecraft/local-opencode-proxy.mjs | node --input-type=module
+```
+
+Health check:
+
+```bash
+curl http://127.0.0.1:8787/health
+```
 
 ## All data is local
 

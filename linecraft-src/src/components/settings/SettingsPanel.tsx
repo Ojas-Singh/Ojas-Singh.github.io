@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Key, Shield, CheckCircle, XCircle, Loader2, Server } from "lucide-react";
-import { AppSettings, KeyStorageMode, OPENCODE_GO_MODELS } from "@/types/settings";
+import { Key, Shield, CheckCircle, XCircle, Loader2, Server, Copy } from "lucide-react";
+import { AppSettings, DEFAULT_PROXY_URL, KeyStorageMode, OPENCODE_GO_MODELS } from "@/types/settings";
 import { getSettings, saveSettings, getApiKey, saveApiKey } from "@/lib/storage/settings";
 import { fetchOpenCodeGoModels, testOpenCodeGoConnection } from "@/lib/ai/opencodeGo";
 
@@ -18,15 +18,55 @@ const inputClass =
 const labelClass =
   "text-xs font-medium text-ink-muted uppercase tracking-wider block mb-1.5";
 
+const WINDOWS_PROXY_COMMAND =
+  "irm https://ojas-singh.github.io/linecraft/local-opencode-proxy.mjs | node --input-type=module";
+const UNIX_PROXY_COMMAND =
+  "curl -fsSL https://ojas-singh.github.io/linecraft/local-opencode-proxy.mjs | node --input-type=module";
+const HEALTH_CHECK_COMMAND = "curl http://127.0.0.1:8787/health";
+
+function CopyCommandButton({
+  label,
+  command,
+  copiedCommand,
+  onCopy,
+}: {
+  label: string;
+  command: string;
+  copiedCommand: string;
+  onCopy: (command: string) => void;
+}) {
+  const copied = copiedCommand === command;
+
+  return (
+    <div className="rounded-lg border border-line bg-white overflow-hidden">
+      <div className="flex items-center justify-between gap-2 px-3 py-2 border-b border-line">
+        <span className="text-xs font-medium text-ink">{label}</span>
+        <button
+          type="button"
+          onClick={() => onCopy(command)}
+          className="inline-flex items-center gap-1.5 text-xs text-brand-600 hover:text-brand-700 transition-colors"
+        >
+          {copied ? <CheckCircle className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+          {copied ? "Copied" : "Copy"}
+        </button>
+      </div>
+      <pre className="px-3 py-2 text-[11px] leading-relaxed text-ink-secondary overflow-x-auto whitespace-pre-wrap">
+        <code>{command}</code>
+      </pre>
+    </div>
+  );
+}
+
 export function SettingsPanel() {
   const [settings, setSettings] = useState<AppSettings>(getSettings);
   const [keyInput, setKeyInput] = useState(getApiKey() ?? "");
-  const [proxyInput, setProxyInput] = useState(settings.proxyUrl ?? "");
+  const [proxyInput, setProxyInput] = useState(settings.proxyUrl || DEFAULT_PROXY_URL);
   const [models, setModels] = useState(OPENCODE_GO_MODELS);
   const [modelStatus, setModelStatus] = useState<"loading" | "success" | "fallback">("loading");
   const [status, setStatus] = useState<"idle" | "testing" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
-  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(true);
+  const [copiedCommand, setCopiedCommand] = useState("");
 
   useEffect(() => {
     let cancelled = false;
@@ -62,7 +102,17 @@ export function SettingsPanel() {
   };
 
   const handleSaveProxy = () => {
-    handleSaveSettings({ ...settings, proxyUrl: proxyInput.trim() });
+    handleSaveSettings({ ...settings, proxyUrl: proxyInput.trim() || DEFAULT_PROXY_URL });
+  };
+
+  const handleCopyCommand = async (command: string) => {
+    try {
+      await navigator.clipboard.writeText(command);
+      setCopiedCommand(command);
+      window.setTimeout(() => setCopiedCommand(""), 1800);
+    } catch {
+      setCopiedCommand("");
+    }
   };
 
   const handleTest = async () => {
@@ -87,7 +137,11 @@ export function SettingsPanel() {
       }
     } catch (err) {
       setStatus("error");
-      setErrorMsg(err instanceof Error ? err.message : String(err));
+      const message = err instanceof Error ? err.message : String(err);
+      setErrorMsg(message);
+      if (message.includes(DEFAULT_PROXY_URL)) {
+        setShowAdvanced(true);
+      }
     }
   };
 
@@ -129,7 +183,7 @@ export function SettingsPanel() {
           className={inputClass}
         />
         <p className="text-xs text-ink-muted mt-1.5">
-          Your key is sent to OpenCode Go{settings.proxyUrl ? " through your advanced proxy override" : ""}.{" "}
+          Your key is sent to OpenCode Go through your local proxy.{" "}
           <span className="text-amber-600">
             In a browser app, the key cannot be truly hidden.
           </span>
@@ -198,34 +252,52 @@ export function SettingsPanel() {
           <label htmlFor="proxy-url" className={labelClass}>
             <span className="inline-flex items-center gap-1.5">
               <Server className="w-3 h-3" />
-              Advanced Proxy Override
+              Local Proxy
             </span>
           </label>
           <button
             onClick={() => setShowAdvanced(!showAdvanced)}
             className="text-xs text-brand-600 hover:text-brand-700 transition-colors"
           >
-            {showAdvanced ? "Hide advanced" : "Show advanced"}
+            {showAdvanced ? "Hide setup" : "Show setup"}
           </button>
         </div>
         <p className="text-xs text-ink-muted mt-1.5">
-          Browser-only mode calls OpenCode Go directly. Frontend JavaScript, GitHub Pages, Vite, and fetch options cannot bypass CORS if OpenCode blocks chat completions.
+          Run one command in your terminal, keep it open, then use the default proxy URL below.
         </p>
 
         {showAdvanced && (
-          <div className="mt-3 p-3 rounded-xl bg-inset border border-line text-xs text-ink-secondary space-y-2">
-            <p className="font-medium text-ink">Optional proxy URL</p>
+          <div className="mt-3 p-3 rounded-xl bg-inset border border-line text-xs text-ink-secondary space-y-3">
+            <CopyCommandButton
+              label="Windows PowerShell"
+              command={WINDOWS_PROXY_COMMAND}
+              copiedCommand={copiedCommand}
+              onCopy={handleCopyCommand}
+            />
+            <CopyCommandButton
+              label="macOS, Linux, or Git Bash"
+              command={UNIX_PROXY_COMMAND}
+              copiedCommand={copiedCommand}
+              onCopy={handleCopyCommand}
+            />
+            <CopyCommandButton
+              label="Health check"
+              command={HEALTH_CHECK_COMMAND}
+              copiedCommand={copiedCommand}
+              onCopy={handleCopyCommand}
+            />
+            <p className="font-medium text-ink">Proxy URL</p>
             <input
               id="proxy-url"
               type="text"
               value={proxyInput}
               onChange={(e) => setProxyInput(e.target.value)}
               onBlur={handleSaveProxy}
-              placeholder="https://your-proxy.example.com"
+              placeholder={DEFAULT_PROXY_URL}
               className={inputClass}
             />
             <p className="text-ink-muted mt-2">
-              Leave this blank for browser-only mode. Use it only if you later have a trusted proxy available.
+              Default: {DEFAULT_PROXY_URL}. Keep the proxy terminal open while using LineCraft.
             </p>
           </div>
         )}
@@ -249,7 +321,7 @@ export function SettingsPanel() {
       {status === "success" && (
         <div className="flex items-center gap-2 p-3 rounded-xl bg-green-50 border border-green-200 text-sm text-green-700">
           <CheckCircle className="w-4 h-4 flex-shrink-0" />
-          Connection successful - OpenCode Go chat completions are reachable{settings.proxyUrl ? " through the advanced proxy override" : " from this browser"}.
+          Connection successful - OpenCode Go chat completions are reachable through the local proxy.
         </div>
       )}
 
