@@ -22,7 +22,7 @@ A browser-based AI writing workbench - dump messy context, get polished drafts i
 ## Running locally
 
 ```bash
-cd linecraft
+cd linecraft-src
 npm install
 npm run dev
 ```
@@ -41,12 +41,12 @@ npm run preview
 From the repository root, run:
 
 ```bash
-cd linecraft
+cd linecraft-src
 npm ci
 npm run build:pages
 ```
 
-The static app will be in `_site/linecraft/`, which serves at:
+The static app will be written to both `linecraft/` for branch-based GitHub Pages and `_site/linecraft/` for Actions-based GitHub Pages. It serves at:
 
 ```text
 https://ojas-singh.github.io/linecraft/
@@ -103,7 +103,7 @@ The GitHub Actions workflow in `.github/workflows/deploy-linecraft.yml`:
 ## File structure
 
 ```text
-linecraft/
+linecraft-src/
   src/
     App.tsx                   - Root component with tab navigation
     components/

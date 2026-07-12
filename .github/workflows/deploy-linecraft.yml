@@ -4,6 +4,7 @@ on:
   push:
     branches: ["master"]
     paths:
+      - "linecraft-src/**"
       - "linecraft/**"
       - ".github/workflows/deploy-linecraft.yml"
   workflow_dispatch:
@@ -22,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: linecraft
+        working-directory: linecraft-src
     steps:
       - uses: actions/checkout@v4
 
@@ -30,7 +31,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: linecraft/package-lock.json
+          cache-dependency-path: linecraft-src/package-lock.json
 
       - run: npm ci
 
