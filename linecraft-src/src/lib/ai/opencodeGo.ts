@@ -8,6 +8,12 @@ const MODELS_ENDPOINT = "https://opencode.ai/zen/go/v1/models";
 const VITE_PROXY_PATH = "/api/openai/chat/completions";
 
 function getProxyUrl(): string {
+  if (
+    typeof window !== "undefined" &&
+    (window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost")
+  ) {
+    return window.location.origin;
+  }
   const settings = getSettings();
   return settings.proxyUrl?.trim() || DEFAULT_PROXY_URL;
 }

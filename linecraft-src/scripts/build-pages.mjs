@@ -5,6 +5,9 @@ import { fileURLToPath } from "node:url";
 const appRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const repoRoot = resolve(appRoot, "..");
 const appDist = resolve(appRoot, "dist");
+const landingRoot = resolve(appRoot, "landing");
+const launcherSource = resolve(appRoot, "launcher.mjs");
+const faviconSource = resolve(appRoot, "public", "favicon.svg");
 const siteRoot = resolve(repoRoot, "_site");
 const linecraftTarget = resolve(siteRoot, "linecraft");
 const branchLinecraftTarget = resolve(repoRoot, "linecraft");
@@ -40,13 +43,22 @@ function emptyDirectory(path) {
 if (!existsSync(appDist)) {
   throw new Error(`Missing Vite build output: ${appDist}`);
 }
+if (!existsSync(landingRoot) || !existsSync(launcherSource)) {
+  throw new Error("Missing LineCraft landing page or launcher source");
+}
+
+function assembleLineCraft(target) {
+  emptyDirectory(target);
+  cpSync(landingRoot, target, { recursive: true });
+  cpSync(launcherSource, resolve(target, "launcher.mjs"));
+  cpSync(faviconSource, resolve(target, "favicon.svg"));
+  cpSync(appDist, resolve(target, "app"), { recursive: true });
+}
 
 copyRootSite();
-mkdirSync(linecraftTarget, { recursive: true });
-cpSync(appDist, linecraftTarget, { recursive: true });
-emptyDirectory(branchLinecraftTarget);
-cpSync(appDist, branchLinecraftTarget, { recursive: true });
+assembleLineCraft(linecraftTarget);
+assembleLineCraft(branchLinecraftTarget);
 
 console.log(`Copied full GitHub Pages site to ${siteRoot}`);
-console.log(`Copied LineCraft static build to ${linecraftTarget}`);
-console.log(`Copied branch-based LineCraft build to ${branchLinecraftTarget}`);
+console.log(`Assembled LineCraft landing, launcher, and app at ${linecraftTarget}`);
+console.log(`Assembled branch-based LineCraft release at ${branchLinecraftTarget}`);

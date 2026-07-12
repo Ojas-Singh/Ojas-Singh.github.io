@@ -12,7 +12,7 @@ export type ModelOption = {
   label: string;
 };
 
-export const DEFAULT_PROXY_URL = "http://localhost:8787";
+export const DEFAULT_PROXY_URL = "http://127.0.0.1:8787";
 export const OPENCODE_GO_MODELS: ModelOption[] = [
   { id: "kimi-k2.7-code", label: "Kimi K2.7 Code" },
   { id: "kimi-k2.6", label: "Kimi K2.6" },

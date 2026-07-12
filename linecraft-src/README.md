@@ -9,7 +9,7 @@ A browser-based AI writing workbench - dump messy context, get polished drafts i
 1. **Style Profile** - Paste or upload writing samples. The AI extracts your writing style.
 2. **Context Dump** - Dump everything: bullet points, half-written arguments, data. Messy is fine.
 3. **Generate Draft** - The AI writes a complete first draft in your style, for your target format.
-4. **Sentence Workbench** - Split the draft into sentences, generate variants, and accept the one you like.
+4. **Highlight Workbench** - Highlight any passage, compare controlled variants, and accept the one you like.
 5. **Export** - Copy to clipboard, download as `.txt` or `.md`, or export the full project as `.json`.
 
 ## Tech stack
@@ -27,7 +27,7 @@ npm install
 npm run dev
 ```
 
-Opens at `http://localhost:5173/linecraft/`.
+Opens at `http://localhost:5173/linecraft/app/`.
 
 ## Build for production
 
@@ -46,7 +46,7 @@ npm ci
 npm run build:pages
 ```
 
-The static app will be written to both `linecraft/` for branch-based GitHub Pages and `_site/linecraft/` for Actions-based GitHub Pages. It serves at:
+The complete release will be written to both `linecraft/` for branch-based GitHub Pages and `_site/linecraft/` for Actions-based GitHub Pages. The public landing page serves at:
 
 ```text
 https://ojas-singh.github.io/linecraft/
@@ -56,7 +56,7 @@ https://ojas-singh.github.io/linecraft/
 
 You need an [OpenCode Go](https://opencode.ai) subscription API key.
 
-**Your API key is sent directly from your browser to OpenCode Go.** The app is a static frontend, so GitHub Pages cannot provide a server-side API route by itself.
+**Your API key is held by the browser and forwarded through the loopback launcher to OpenCode Go.** It is never written by the launcher or sent to GitHub Pages.
 
 ### Storage modes
 
@@ -70,46 +70,35 @@ Default: **session only**.
 
 > Because this is a browser app, the API key cannot be truly hidden. Anyone with access to your browser's developer tools can see it.
 
-## Browser-only OpenCode Go behavior
+## One-command local launcher
 
-LineCraft does not require a public backend, Cloudflare Worker, or browser extension to deploy.
-
-The OpenCode Go model list endpoint currently works from the browser, so LineCraft loads the current model list dynamically. AI generation attempts direct browser requests to the OpenCode Go chat completions endpoint.
-
-If chat completions fail with CORS, that is a browser security restriction enforced by OpenCode Go's response headers. Frontend JavaScript, GitHub Pages, Vite, and `fetch` options cannot bypass server CORS rules. Browser-only AI generation will work if OpenCode Go allows web origins for chat completions.
-
-By default, LineCraft uses a personal local proxy at:
+The public URL is a launch page. It provides a self-contained Node command that starts the app at:
 
 ```text
-http://localhost:8787
+http://127.0.0.1:8787/
 ```
 
-Users can start it from any folder with one command.
+No repository checkout, dependency installation, or compilation is required. Node.js 18+ is the only local prerequisite.
 
 Windows PowerShell:
 
 ```powershell
-irm https://ojas-singh.github.io/linecraft/local-opencode-proxy.mjs | node --input-type=module
+irm https://ojas-singh.github.io/linecraft/launcher.mjs | node --input-type=module
 ```
 
 macOS, Linux, or Git Bash:
 
 ```bash
-curl -fsSL https://ojas-singh.github.io/linecraft/local-opencode-proxy.mjs | node --input-type=module
+curl -fsSL https://ojas-singh.github.io/linecraft/launcher.mjs | node --input-type=module
 ```
 
 Health check:
 
 ```bash
-curl http://localhost:8787/health
+curl http://127.0.0.1:8787/health
 ```
 
-Safari blocks an HTTPS page from calling a local HTTP proxy. After starting the
-proxy, open LineCraft through the same local origin instead:
-
-```text
-http://localhost:8787/linecraft/
-```
+The launcher serves the current compiled app through the local origin, forwards AI requests to OpenCode Go, opens the browser automatically, and must remain running while LineCraft is in use.
 
 ## All data is local
 
@@ -121,14 +110,22 @@ http://localhost:8787/linecraft/
 
 This project is configured to deploy to GitHub Pages at `ojas-singh.github.io/linecraft/`.
 
+The deployed layout is:
+
+```text
+/linecraft/              landing page
+/linecraft/launcher.mjs  self-contained local launcher
+/linecraft/app/          compiled Vite application
+```
+
 The GitHub Actions workflow in `.github/workflows/deploy-linecraft.yml`:
 1. Builds the Vite app with `npm run build:pages`
-2. Copies the output into `_site/linecraft/`
+2. Assembles the landing page, launcher, and compiled app in `_site/linecraft/`
 3. Deploys via `actions/deploy-pages@v4`
 
 ## Known limitations
 
-- **Browser-only AI generation depends on OpenCode Go CORS.** Model listing works in the browser, but chat completions can only work if OpenCode allows browser origins for that endpoint.
+- **The local launcher requires internet access.** It streams the current app assets from GitHub Pages and sends AI requests to OpenCode Go.
 - **PDF worker** is bundled (~1.3MB) and increases the download size. Future optimization: lazy-load the worker.
 
 ## File structure

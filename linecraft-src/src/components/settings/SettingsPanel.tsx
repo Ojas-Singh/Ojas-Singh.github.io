@@ -19,9 +19,9 @@ const labelClass =
   "text-xs font-medium text-ink-muted uppercase tracking-wider block mb-1.5";
 
 const WINDOWS_PROXY_COMMAND =
-  "irm https://ojas-singh.github.io/linecraft/local-opencode-proxy.mjs | node --input-type=module";
+  "irm https://ojas-singh.github.io/linecraft/launcher.mjs | node --input-type=module";
 const UNIX_PROXY_COMMAND =
-  "curl -fsSL https://ojas-singh.github.io/linecraft/local-opencode-proxy.mjs | node --input-type=module";
+  "curl -fsSL https://ojas-singh.github.io/linecraft/launcher.mjs | node --input-type=module";
 const HEALTH_CHECK_COMMAND = "curl http://localhost:8787/health";
 
 function CopyCommandButton({
