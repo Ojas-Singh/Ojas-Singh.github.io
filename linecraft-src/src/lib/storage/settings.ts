@@ -6,7 +6,14 @@ export function getSettings(): AppSettings {
   try {
     const raw = localStorage.getItem(SETTINGS_KEY);
     if (raw) {
-      return { ...getDefaultSettings(), ...JSON.parse(raw) };
+      const saved = { ...getDefaultSettings(), ...JSON.parse(raw) } as AppSettings;
+      // Safari treats localhost more reliably as a trustworthy loopback origin
+      // when an HTTPS page calls a local HTTP development service.
+      if (saved.proxyUrl === "http://127.0.0.1:8787") {
+        saved.proxyUrl = "http://localhost:8787";
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(saved));
+      }
+      return saved;
     }
   } catch {
     // corrupt data, fall through

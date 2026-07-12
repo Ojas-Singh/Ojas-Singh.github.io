@@ -81,7 +81,7 @@ If chat completions fail with CORS, that is a browser security restriction enfor
 By default, LineCraft uses a personal local proxy at:
 
 ```text
-http://127.0.0.1:8787
+http://localhost:8787
 ```
 
 Users can start it from any folder with one command.
@@ -101,7 +101,7 @@ curl -fsSL https://ojas-singh.github.io/linecraft/local-opencode-proxy.mjs | nod
 Health check:
 
 ```bash
-curl http://127.0.0.1:8787/health
+curl http://localhost:8787/health
 ```
 
 ## All data is local

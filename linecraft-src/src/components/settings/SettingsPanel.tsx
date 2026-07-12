@@ -22,7 +22,7 @@ const WINDOWS_PROXY_COMMAND =
   "irm https://ojas-singh.github.io/linecraft/local-opencode-proxy.mjs | node --input-type=module";
 const UNIX_PROXY_COMMAND =
   "curl -fsSL https://ojas-singh.github.io/linecraft/local-opencode-proxy.mjs | node --input-type=module";
-const HEALTH_CHECK_COMMAND = "curl http://127.0.0.1:8787/health";
+const HEALTH_CHECK_COMMAND = "curl http://localhost:8787/health";
 
 function CopyCommandButton({
   label,
