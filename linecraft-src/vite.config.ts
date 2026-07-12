@@ -14,13 +14,4 @@ export default defineConfig({
       "@": path.resolve(__dirname, "src"),
     },
   },
-  server: {
-    proxy: {
-      "/api/openai": {
-        target: "https://opencode.ai",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/openai/, "/zen/go/v1"),
-      },
-    },
-  },
 });

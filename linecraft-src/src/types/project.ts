@@ -1,8 +1,13 @@
+import type { SentenceFeedback, WritingDocument } from "./sentence";
+
+export type VersionAction = "generated" | "edited" | "moved" | "deleted" | "inserted" | "rewrite" | "manual" | "restored";
+
 export type DraftVersion = {
   id: string;
   name: string;
   createdAt: string;
-  text: string;
+  document: WritingDocument;
+  action: VersionAction;
 };
 
 export type WritingProject = {
@@ -10,20 +15,17 @@ export type WritingProject = {
   title: string;
   createdAt: string;
   updatedAt: string;
-
   targetFormat: string;
   audience: string;
   goal: string;
-
   rawContext: string;
   mustInclude: string;
   niceToInclude: string;
   doNotSay: string;
   evidence: string;
   toneOverride: string;
-
   selectedStyleProfileId: string | null;
-
-  currentDraft: string;
+  document: WritingDocument;
   versions: DraftVersion[];
+  feedback: SentenceFeedback[];
 };

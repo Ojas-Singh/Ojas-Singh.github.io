@@ -56,6 +56,10 @@ body {
   width: 100%;
   min-height: 60vh;
   font-feature-settings: "liga", "kern";
+  box-sizing: border-box;
+  letter-spacing: normal;
+  tab-size: 4;
+  scrollbar-gutter: stable;
 }
 
 .draft-textarea::placeholder {
@@ -70,6 +74,70 @@ body {
 
 .draft-textarea:focus {
   outline: none;
+}
+
+.highlight-editor {
+  position: relative;
+}
+
+.highlight-backdrop {
+  position: absolute;
+  /* Match the textarea's reserved 10px scrollbar gutter. Without this, the
+     textarea wraps earlier and the mirrored text drifts on lower lines. */
+  inset: 0 10px 0 0;
+  overflow: hidden;
+  pointer-events: none;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  padding: 1.75rem;
+  min-height: 60vh;
+  font-family: var(--font-draft);
+  font-size: 1.0625rem;
+  line-height: 1.85;
+  color: var(--color-ink);
+  font-feature-settings: "liga", "kern";
+  box-sizing: border-box;
+  letter-spacing: normal;
+  tab-size: 4;
+}
+
+.highlight-backdrop mark {
+  color: inherit;
+  background: #fde68a;
+  border-radius: 0.2rem;
+  box-shadow: 0 0 0 2px #fde68a;
+}
+
+.highlight-backdrop mark.diff-preview {
+  background: #fef3c7;
+  box-shadow: 0 0 0 3px #fef3c7;
+}
+
+.diff-preview .diff-added {
+  color: #166534;
+  background: #bbf7d0;
+  text-decoration: none;
+  border-radius: 0.18rem;
+}
+
+.diff-preview .diff-removed {
+  color: #991b1b;
+  background: #fecaca;
+  text-decoration: line-through;
+  border-radius: 0.18rem;
+}
+
+.highlight-input {
+  position: relative;
+  z-index: 1;
+  color: transparent;
+  caret-color: var(--color-ink);
+  background: transparent;
+}
+
+.highlight-input::selection {
+  color: transparent;
+  background: rgba(245, 158, 11, 0.18);
 }
 
 ::selection {

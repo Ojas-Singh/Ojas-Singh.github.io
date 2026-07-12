@@ -13,6 +13,12 @@ export class LineCraftDB extends Dexie {
       styleProfiles: "id, name, createdAt, updatedAt",
       projects: "id, title, createdAt, updatedAt",
     });
+    this.version(2).stores({
+      styleProfiles: "id, name, createdAt, updatedAt",
+      projects: "id, title, createdAt, updatedAt",
+    }).upgrade(async (tx) => {
+      await tx.table("projects").clear();
+    });
   }
 }
 

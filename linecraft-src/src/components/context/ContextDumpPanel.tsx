@@ -7,6 +7,7 @@ import { callOpenCodeGo } from "@/lib/ai/opencodeGo";
 import { buildDraftPrompt, getDraftSystemMessage } from "@/lib/ai/prompts";
 import { createProject, updateProject, createVersion } from "@/lib/storage/projects";
 import { FORMATS } from "@/lib/ai/formats";
+import { textToDocument } from "@/lib/sentence/document";
 
 type Props = {
   activeProfile: StyleProfile | null;
@@ -64,7 +65,6 @@ export function ContextDumpPanel({
     debounceRef.current = setTimeout(async () => {
       lastSavedRef.current = contextSnapshot;
       const projectTitle = title.trim() || `Draft — ${targetFormat}`;
-
       if (currentProject?.id) {
         const updated = await updateProject(currentProject.id, {
           title: projectTitle,
@@ -147,6 +147,7 @@ export function ContextDumpPanel({
           },
         ],
       });
+      const document = textToDocument(draftText, "generated");
 
       const projectTitle = title.trim() || `Draft — ${targetFormat}`;
 
@@ -164,7 +165,7 @@ export function ContextDumpPanel({
           evidence,
           toneOverride,
           selectedStyleProfileId: activeProfile.id,
-          currentDraft: draftText,
+          document,
         });
         if (updated) {
           project = updated;
@@ -181,7 +182,7 @@ export function ContextDumpPanel({
             evidence,
             toneOverride,
             selectedStyleProfileId: activeProfile.id,
-            currentDraft: draftText,
+            document,
           });
         }
       } else {
@@ -197,16 +198,16 @@ export function ContextDumpPanel({
           evidence,
           toneOverride,
           selectedStyleProfileId: activeProfile.id,
-          currentDraft: draftText,
+          document,
         });
       }
 
-      const version = createVersion("v1 — Raw AI draft", draftText);
-      await updateProject(project.id, {
+      const version = createVersion("v1 — Raw AI draft", document, "generated");
+      const finalProject = await updateProject(project.id, {
         versions: [...(project.versions ?? []), version],
       });
 
-      onProjectChange(project);
+      onProjectChange(finalProject ?? project);
       onDraftGenerated(draftText);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Draft generation failed. Please try again.");

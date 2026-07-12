@@ -159,6 +159,7 @@ export function StyleProfilePanel({ activeProfileId, onSelectProfile }: Props) {
                 rhetoricalHabits: [],
                 directnessLevel: "direct",
                 typicalPhrases: [],
+                preferredPhrases: [],
                 avoidPhrases: [],
                 rules: [],
                 exampleTransformations: [],

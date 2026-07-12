@@ -34,8 +34,40 @@ function buildBody(params: OpenCodeGoCall): Record<string, unknown> {
     temperature: params.temperature ?? 0.7,
   };
   if (params.stream) body.stream = true;
-  if (params.maxTokens) body.max_tokens = params.maxTokens;
+  // Reasoning-capable models may spend most of the completion budget before
+  // emitting final content. Structured calls need enough room for both phases.
+  if (params.maxTokens) {
+    body.max_tokens = Math.max(params.maxTokens, 12000);
+    if (params.model?.startsWith("deepseek-")) body.reasoning_effort = "low";
+  }
   return body;
+}
+
+function textFromContent(value: unknown): string {
+  if (typeof value === "string") return value;
+  if (Array.isArray(value)) return value.map(textFromContent).filter(Boolean).join("\n");
+  if (!value || typeof value !== "object") return "";
+  const item = value as Record<string, unknown>;
+  for (const key of ["text", "output_text", "content", "value"]) {
+    const text = textFromContent(item[key]);
+    if (text) return text;
+  }
+  return "";
+}
+
+function extractCompletionText(data: unknown): string {
+  if (!data || typeof data !== "object") return "";
+  const root = data as Record<string, unknown>;
+  const choices = Array.isArray(root.choices) ? root.choices : [];
+  const first = choices[0] && typeof choices[0] === "object" ? choices[0] as Record<string, unknown> : {};
+  const message = first.message && typeof first.message === "object" ? first.message as Record<string, unknown> : {};
+  for (const value of [message.content, first.text, root.output_text, root.output]) {
+    const text = textFromContent(value).trim();
+    if (text) return text;
+  }
+  // Never expose reasoning_content. It may contain internal chain-of-thought,
+  // prompt restatement, or planning notes that are not user-facing output.
+  return "";
 }
 
 function connectionError(endpoint: string, err: unknown): Error {
@@ -98,8 +130,14 @@ export async function callOpenCodeGo({
     throw new Error(`OpenCode Go API error: ${await readError(response)}`);
   }
 
-  const data = await response.json();
-  return data.choices?.[0]?.message?.content ?? "";
+  const data: unknown = await response.json();
+  const text = extractCompletionText(data);
+  if (text) return text;
+  const root = data && typeof data === "object" ? data as Record<string, unknown> : {};
+  const choices = Array.isArray(root.choices) ? root.choices : [];
+  const first = choices[0] && typeof choices[0] === "object" ? choices[0] as Record<string, unknown> : {};
+  const reason = typeof first.finish_reason === "string" ? ` Finish reason: ${first.finish_reason}.` : "";
+  throw new Error(`The model returned no readable text.${reason} Try again; if this repeats, choose a non-reasoning chat model.`);
 }
 
 export async function* callOpenCodeGoStream(

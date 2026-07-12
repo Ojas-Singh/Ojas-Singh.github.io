@@ -101,6 +101,7 @@ export function StyleProfileEditor({ profile, onChange, onSave, onCancel, saving
       <ListSection title="Vocabulary Habits" items={local.vocabularyHabits} onAdd={(v) => updateList("vocabularyHabits", v)} onRemove={(i) => removeListItem("vocabularyHabits", i)} />
       <ListSection title="Rhetorical Habits" items={local.rhetoricalHabits} onAdd={(v) => updateList("rhetoricalHabits", v)} onRemove={(i) => removeListItem("rhetoricalHabits", i)} />
       <ListSection title="Typical Phrases" items={local.typicalPhrases} onAdd={(v) => updateList("typicalPhrases", v)} onRemove={(i) => removeListItem("typicalPhrases", i)} />
+      <ListSection title="Preferred Phrases" items={local.preferredPhrases ?? []} onAdd={(v) => updateList("preferredPhrases", v)} onRemove={(i) => removeListItem("preferredPhrases", i)} />
       <ListSection title="Phrases to Avoid" items={local.avoidPhrases} onAdd={(v) => updateList("avoidPhrases", v)} onRemove={(i) => removeListItem("avoidPhrases", i)} />
       <ListSection title="Style Rules" items={local.rules} onAdd={(v) => updateList("rules", v)} onRemove={(i) => removeListItem("rules", i)} />
 

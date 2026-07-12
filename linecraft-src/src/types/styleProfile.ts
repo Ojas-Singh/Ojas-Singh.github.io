@@ -11,6 +11,7 @@ export type StyleProfile = {
   rhetoricalHabits: string[];
   directnessLevel: "soft" | "balanced" | "direct" | "very-direct";
   typicalPhrases: string[];
+  preferredPhrases: string[];
   avoidPhrases: string[];
   rules: string[];
   exampleTransformations: {

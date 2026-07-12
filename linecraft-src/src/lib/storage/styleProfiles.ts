@@ -26,6 +26,7 @@ export async function saveStyleProfile(
     rhetoricalHabits: profile.rhetoricalHabits,
     directnessLevel: profile.directnessLevel,
     typicalPhrases: profile.typicalPhrases,
+    preferredPhrases: profile.preferredPhrases ?? profile.typicalPhrases ?? [],
     avoidPhrases: profile.avoidPhrases,
     rules: profile.rules,
     exampleTransformations: profile.exampleTransformations,

@@ -28,6 +28,7 @@ export const DEFAULT_DIRECT_ACADEMIC: StyleProfile = {
     "This is important because",
     "In its current form",
   ],
+  preferredPhrases: [],
   avoidPhrases: [
     "It is worth noting",
     "Furthermore",

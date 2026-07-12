@@ -1,6 +1,8 @@
 import { v4 as uuid } from "uuid";
 import { db } from "./db";
 import type { WritingProject, DraftVersion } from "@/types/project";
+import type { WritingDocument } from "@/types/sentence";
+import { cloneDocument, emptyDocument } from "@/lib/sentence/document";
 
 export async function getAllProjects(): Promise<WritingProject[]> {
   return db.projects.orderBy("updatedAt").reverse().toArray();
@@ -29,8 +31,9 @@ export async function createProject(
     evidence: data.evidence ?? "",
     toneOverride: data.toneOverride ?? "",
     selectedStyleProfileId: data.selectedStyleProfileId ?? null,
-    currentDraft: data.currentDraft ?? "",
+    document: data.document ?? emptyDocument(),
     versions: data.versions ?? [],
+    feedback: data.feedback ?? [],
   };
   await db.projects.put(project);
   return project;
@@ -58,11 +61,12 @@ export async function deleteProject(id: string): Promise<void> {
   await db.projects.delete(id);
 }
 
-export function createVersion(name: string, text: string): DraftVersion {
+export function createVersion(name: string, document: WritingDocument, action: DraftVersion["action"] = "manual"): DraftVersion {
   return {
     id: uuid(),
     name,
     createdAt: new Date().toISOString(),
-    text,
+    document: cloneDocument(document),
+    action,
   };
 }

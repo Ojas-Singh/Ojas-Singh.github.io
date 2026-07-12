@@ -17,6 +17,7 @@ Return strict JSON with this shape:
   "rhetoricalHabits": ["string"],
   "directnessLevel": "soft | balanced | direct | very-direct",
   "typicalPhrases": ["string"],
+  "preferredPhrases": ["string"],
   "avoidPhrases": ["string"],
   "rules": ["string"],
   "exampleTransformations": [
@@ -147,6 +148,32 @@ Rules:
 
 export function getSentenceVariantsSystemMessage(): string {
   return "You generate rewrite options for a selected passage. Return only valid JSON. Do not include markdown.";
+}
+
+export function buildControlRoomRewritePrompt(input: {
+  selectedText: string; paragraph: string; intent: string; freedom: string; lockMeaning: boolean;
+  localContext: string; audience: string; goal: string; doNotSay: string[];
+  preferredPhrases: string[]; style: { voice: string; tone: string; sentenceRhythm: string; rules: string[] };
+  feedback: string[];
+}): string {
+  return `Write a replacement for only this selection. Return JSON immediately; do not explain or restate the task.
+Selection: ${input.selectedText}
+Context: ${input.paragraph}
+User-requested addition: ${input.localContext || "none"}
+Intent/freedom: ${input.intent}/${input.freedom}
+${input.lockMeaning ? "Preserve every original claim and detail; user-requested additions are explicitly authorized." : "Meaning may change when useful."}
+Audience/goal: ${input.audience || "unspecified"}; ${input.goal || "unspecified"}
+Style: ${input.style.voice}; ${input.style.tone}; ${input.style.rules.join("; ")}
+Avoid: ${input.doNotSay.join("; ") || "none"}
+Prefer when natural: ${input.preferredPhrases.join("; ") || "none"}
+Rejected before: ${input.feedback.join("; ") || "none"}
+If a user-requested addition is provided, every option must incorporate it. Use two or more sentences when that communicates the addition more naturally; the replacement does not need to match the original sentence count or length.
+Return exactly 5 objects labelled Clean professional, Natural, Stronger, Simple, and Closest to my style.
+Schema: [{"label":"Natural","text":"rewrite","meaning":{"risk":"low","removedDetails":[],"addedClaims":[],"note":""}}]`;
+}
+
+export function getControlRoomRewriteSystemMessage(): string {
+  return "You are a precise sentence editor. Return only valid JSON and never hide meaning changes.";
 }
 
 export function buildParagraphRewritePrompt(input: {

@@ -5,8 +5,6 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "proxy": "node ./public/local-opencode-proxy.mjs",
-    "start:local-proxy": "node ./public/local-opencode-proxy.mjs",
     "build": "tsc -b && vite build",
     "build:pages": "npm run build && node ./scripts/build-pages.mjs",
     "preview": "vite preview",

@@ -12,6 +12,7 @@ import {
 import type { WritingProject } from "@/types/project";
 import { getAllProjects, createProject } from "@/lib/storage/projects";
 import { getAllStyleProfiles, saveStyleProfile } from "@/lib/storage/styleProfiles";
+import { documentToText } from "@/lib/sentence/document";
 
 type Props = {
   currentProject: WritingProject | null;
@@ -23,7 +24,7 @@ export function ExportPanel({ currentProject }: Props) {
   const [importSuccess, setImportSuccess] = useState("");
   const fileInput = useRef<HTMLInputElement>(null);
 
-  const draftText = currentProject?.currentDraft ?? "";
+  const draftText = currentProject ? documentToText(currentProject.document) : "";
 
   const handleCopy = async () => {
     if (!draftText) return;
