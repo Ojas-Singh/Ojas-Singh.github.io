@@ -1,7 +1,7 @@
 import http from "node:http";
 import { spawn } from "node:child_process";
 
-const VERSION = "1.0.0";
+const VERSION = "1.0.1";
 const HOST = "127.0.0.1";
 const PORT = 8787;
 const LOCAL_URL = `http://${HOST}:${PORT}/`;
@@ -49,7 +49,9 @@ async function proxyStatic(request, response, url) {
   try {
     const upstream = await fetch(target, { method: request.method, redirect: "follow" });
     const headers = { "Content-Type": upstream.headers.get("content-type") || "application/octet-stream" };
-    for (const name of ["content-length", "etag", "last-modified"]) {
+    // Node fetch transparently decompresses upstream bodies. Forwarding the
+    // compressed Content-Length would make browsers truncate HTML and assets.
+    for (const name of ["etag", "last-modified"]) {
       const value = upstream.headers.get(name);
       if (value) headers[name] = value;
     }
@@ -122,7 +124,7 @@ async function existingLineCraft() {
   try {
     const response = await fetch(`${LOCAL_URL}health`, { signal: AbortSignal.timeout(1500) });
     const data = await response.json();
-    return response.ok && data?.service === "linecraft-launcher";
+    return response.ok && data?.service === "linecraft-launcher" && data?.version === VERSION;
   } catch {
     return false;
   }
