@@ -51,3 +51,23 @@ export function clearApiKey(): void {
   sessionStorage.removeItem("linecraft-api-key");
   localStorage.removeItem("linecraft-api-key");
 }
+
+export type LocalAppState = {
+  lastProjectId: string | null;
+  activeProfileId: string | null;
+  onboardingComplete: boolean;
+};
+
+const APP_STATE_KEY = "linecraft-app-state";
+
+export function getAppState(): LocalAppState {
+  const defaults: LocalAppState = { lastProjectId: null, activeProfileId: null, onboardingComplete: false };
+  try { return { ...defaults, ...JSON.parse(localStorage.getItem(APP_STATE_KEY) ?? "{}") }; }
+  catch { return defaults; }
+}
+
+export function saveAppState(update: Partial<LocalAppState>): LocalAppState {
+  const next = { ...getAppState(), ...update };
+  localStorage.setItem(APP_STATE_KEY, JSON.stringify(next));
+  return next;
+}

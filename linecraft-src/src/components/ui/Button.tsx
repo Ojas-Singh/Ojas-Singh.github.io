@@ -11,7 +11,7 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const VARIANTS: Record<Variant, string> = {
   primary:
-    "bg-brand-600 text-white hover:bg-brand-500 shadow-sm shadow-brand-600/20 hover:shadow-brand-500/30 active:translate-y-0",
+    "bg-brand-300 text-brand-950 border border-brand-700/15 hover:bg-brand-400 shadow-sm shadow-brand-700/10 active:translate-y-0",
   secondary:
     "bg-white text-ink border border-line hover:border-line-hover hover:bg-inset/60 shadow-sm",
   ghost:

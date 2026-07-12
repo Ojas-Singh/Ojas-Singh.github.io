@@ -21,9 +21,10 @@ import { StyleProfileEditor } from "./StyleProfileEditor";
 type Props = {
   activeProfileId: string | null;
   onSelectProfile: (id: string) => void;
+  onContinue?: () => void;
 };
 
-export function StyleProfilePanel({ activeProfileId, onSelectProfile }: Props) {
+export function StyleProfilePanel({ activeProfileId, onSelectProfile, onContinue }: Props) {
   const [profiles, setProfiles] = useState<StyleProfile[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(activeProfileId);
   const [sampleText, setSampleText] = useState("");
@@ -269,6 +270,11 @@ export function StyleProfilePanel({ activeProfileId, onSelectProfile }: Props) {
               </ul>
             </div>
           )}
+        </div>
+      )}
+      {selected && !editingProfile && onContinue && (
+        <div className="sticky bottom-4 flex justify-end pointer-events-none">
+          <button onClick={onContinue} className="btn-primary pointer-events-auto">Use this style and continue</button>
         </div>
       )}
     </div>

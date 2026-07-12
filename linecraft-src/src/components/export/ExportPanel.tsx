@@ -16,9 +16,10 @@ import { documentToText } from "@/lib/sentence/document";
 
 type Props = {
   currentProject: WritingProject | null;
+  embedded?: boolean;
 };
 
-export function ExportPanel({ currentProject }: Props) {
+export function ExportPanel({ currentProject, embedded = false }: Props) {
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState("");
   const [importSuccess, setImportSuccess] = useState("");
@@ -103,12 +104,12 @@ export function ExportPanel({ currentProject }: Props) {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      <div>
+      {!embedded && <div>
         <h2 className="text-2xl font-semibold tracking-tight text-ink">Export</h2>
         <p className="text-sm text-ink-secondary mt-1">
           Copy, download, or back up your work. All data stays in your browser.
         </p>
-      </div>
+      </div>}
 
       {error && (
         <div className="flex items-start gap-2 p-3 rounded-xl bg-red-50 border border-red-200 text-sm text-red-600">

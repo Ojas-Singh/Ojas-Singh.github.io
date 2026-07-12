@@ -24,12 +24,12 @@ export const OPENCODE_GO_MODELS: ModelOption[] = [
   { id: "mimo-v2.5", label: "MiMo V2.5" },
 ] as const;
 
-export const DEFAULT_MODEL = "kimi-k2.7-code";
+export const DEFAULT_MODEL = "deepseek-v4-flash";
 
 export function getDefaultSettings(): AppSettings {
   return {
     provider: "opencode-go",
-    apiKeyStorageMode: "session",
+    apiKeyStorageMode: "local",
     selectedModel: DEFAULT_MODEL,
     proxyUrl: DEFAULT_PROXY_URL,
   };
