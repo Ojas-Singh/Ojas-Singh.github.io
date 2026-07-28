@@ -152,15 +152,15 @@ body {
   border-radius: 0.18rem;
 }
 
-.highlight-input {
+.diff-preview-input {
   position: relative;
   z-index: 1;
   color: transparent;
-  caret-color: var(--color-ink);
+  caret-color: transparent;
   background: transparent;
 }
 
-.highlight-input::selection {
+.diff-preview-input::selection {
   color: transparent;
   background: rgba(245, 158, 11, 0.18);
 }
