@@ -33,8 +33,25 @@ export function WriteWorkspace({ styleProfile, currentProject, onProjectChange, 
 
   const updateText = (value: string) => {
     if (!currentProject) return;
+
+    // Save cursor position before update
+    const el = textarea.current;
+    const cursorPosition = el ? el.selectionStart : null;
+
     const next = textToDocument(value, "manual");
-    void updateProject(currentProject.id, { document: next }).then((p) => p && onProjectChange(p));
+    void updateProject(currentProject.id, { document: next }).then((p) => {
+      if (p) {
+        onProjectChange(p);
+        // Restore cursor position after re-render
+        if (cursorPosition !== null && textarea.current) {
+          requestAnimationFrame(() => {
+            if (textarea.current) {
+              textarea.current.setSelectionRange(cursorPosition, cursorPosition);
+            }
+          });
+        }
+      }
+    });
     if (editTimer.current) clearTimeout(editTimer.current);
     editTimer.current = setTimeout(() => void commit(next, "edited", "Draft edited", false), 800);
   };
