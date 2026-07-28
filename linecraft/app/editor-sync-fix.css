@@ -1,8 +1,7 @@
 /*
- * Keep the text, caret, and live selection on the same native textarea
- * rendering path while the writer is editing. The React-rendered backdrop can
- * otherwise trail rapid input by a frame and display text at different
- * offsets from the browser selection.
+ * The textarea is the sole rendering source during normal writing. This keeps
+ * its text, caret, wrapping, scrolling, and native selection on one layout
+ * path even while input events arrive faster than React can repaint.
  */
 .highlight-input {
   color: var(--color-ink);
@@ -13,16 +12,13 @@
 }
 
 /*
- * Once focus leaves the editor, retain LineCraft's persistent highlight.
- * Diff previews also need the backdrop because they intentionally render text
- * that differs from the textarea's current value.
+ * A diff preview intentionally contains different text, so it is the only
+ * state in which the generated backdrop replaces the native rendering.
  */
-.highlight-editor:not(:focus-within) .highlight-backdrop,
 .highlight-editor:has(.diff-preview) .highlight-backdrop {
   visibility: visible;
 }
 
-.highlight-editor:not(:focus-within) .highlight-input,
 .highlight-editor:has(.diff-preview) .highlight-input {
   color: transparent;
 }
